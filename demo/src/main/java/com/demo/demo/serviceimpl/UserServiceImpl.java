@@ -1,15 +1,17 @@
 package com.demo.demo.serviceimpl;
 
 import java.io.File;
-
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
+import java.util.Optional;
 
-import org.apache.el.stream.Optional;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.mongodb.core.MongoTemplate;
+import org.springframework.data.mongodb.core.query.Criteria;
+import org.springframework.data.mongodb.core.query.Query;
+import org.springframework.data.mongodb.core.query.Update;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
@@ -17,9 +19,7 @@ import com.demo.demo.dto.UserDto;
 import com.demo.demo.modal.User;
 import com.demo.demo.repository.UserRepository;
 import com.demo.demo.service.UserService;
-import org.springframework.data.mongodb.core.query.Criteria;
-import org.springframework.data.mongodb.core.query.Query;
-import org.springframework.data.mongodb.core.query.Update;
+import com.demo.demo.utility.JwtUtil;
  
 
 @Service
@@ -28,7 +28,9 @@ public class UserServiceImpl implements UserService{
 	UserRepository userRepository;
 	@Autowired
 	MongoTemplate mongoTemplate;
-	@Override
+	@Autowired
+	JwtUtil jwtUtil;
+	@Override	
 	public String saveUser(UserDto userDto,MultipartFile image) throws IOException {
 
 		User user=new User();
@@ -104,16 +106,22 @@ public class UserServiceImpl implements UserService{
 
 
 	@Override
-	public boolean checkEmailAndPassword(String email, String p0assword) {
-		java.util.Optional<User> users=userRepository.findByEmailAndPassword(email,p0assword);
+	public String checkEmailAndPassword(String email, String p0assword) {
+		Optional<User> users=userRepository.findByEmailAndPassword(email,p0assword);
+		
 		if(users.isPresent())
 		{
-			return true;			
+			User use=users.get();
+			
+			String jwt=jwtUtil.generateJwt(use);
+			return jwt;
+			//return "true";			
 		}
 		else
 		{
-			return false;
+			return "false";
 		}
+		
 	}
 
 }

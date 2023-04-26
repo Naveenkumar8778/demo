@@ -2,12 +2,9 @@ package com.demo.demo.controller;
 
 import java.io.IOException;
 
-import javax.naming.Binding;
-
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.ModelAttribute;
-import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
@@ -16,6 +13,7 @@ import org.springframework.web.multipart.MultipartFile;
 
 import com.demo.demo.dto.UserDto;
 import com.demo.demo.service.UserService;
+import com.demo.demo.utility.JwtUtil;
 
 import jakarta.validation.Valid;
 
@@ -25,6 +23,8 @@ import jakarta.validation.Valid;
 public class UserController {
 	@Autowired
 	UserService userService;
+	@Autowired
+	JwtUtil jwtUtil;
 	
 	@RequestMapping(path="/savesignup",method = RequestMethod.POST)
 	public String saveUser(@ModelAttribute("User") @Valid UserDto userDto,BindingResult bindingResult,@RequestParam MultipartFile image) throws IOException {
@@ -60,29 +60,27 @@ public class UserController {
 	public String updateUserOriginalFile(@ModelAttribute("User") UserDto userDto,@RequestParam ("userimage") MultipartFile image) throws IOException{	
 		return userService.updateUser(userDto, image);
 	}
-	@RequestMapping(path="/loginuser",method=RequestMethod.POST)
-	public String checkEmailAndPassword(@ModelAttribute("user") @Valid UserDto userDto,BindingResult bindingResult) {
-		String email="";
-		String password="";
-		Boolean userlogin=false;
-		String result="";
-		if(bindingResult.hasFieldErrors("email"))
-		{
-			result=bindingResult.getFieldError().getDefaultMessage();
-			email=userDto.getEmail();
-		}
-		else if(bindingResult.hasFieldErrors("password"))
-		{
-			result=bindingResult.getFieldError().getDefaultMessage();
-			password=userDto.getPassword();
-		}
-		else
-		{
-			userlogin= userService.checkEmailAndPassword(email, password);
-			result=userlogin.toString();
+	
+	@RequestMapping(path = "/loginuser", method = RequestMethod.POST)
+	public String checkEmailAndPassword(@ModelAttribute("user") @Valid UserDto userDto, BindingResult bindingResult) {
+
+		String result = "";
+		if (bindingResult.hasFieldErrors("email")) {
+			result = bindingResult.getFieldError().getDefaultMessage();
+
+		} else if (bindingResult.hasFieldErrors("password")) {
+			result = bindingResult.getFieldError().getDefaultMessage();
+
+		} else {
+			String userlogin = userService.checkEmailAndPassword(userDto.getEmail(), userDto.getPassword());
+			result = userlogin;
 		}
 		return result;
 	}
-	//hi this is for testing
-
+	/*@RequestMapping(path = "/privatemethod", method = RequestMethod.POST)
+	public String privateMethod(@RequestHeader(value = "authorization", defaultValue = "no fecord found") String auth) throws Exception {
+		System.out.println(auth);
+		jwtUtil.varifyJwt(auth);		
+		return "its working";
+	}*/
 }

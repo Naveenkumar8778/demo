@@ -13,6 +13,5 @@ public interface UserService {
 	
 	public String updateUserOriginalFile(UserDto userDto, MultipartFile image) throws IOException;
 
-	boolean checkEmailAndPassword(String email, String p0assword);
-
+	String checkEmailAndPassword(String email, String p0assword);
 }
