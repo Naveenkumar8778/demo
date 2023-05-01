@@ -37,14 +37,14 @@ public class JwtUtil {
 		
 	}
 	
-	/*public void varifyJwt(String auth)throws Exception{
+	public void varifyJwt(String auth)throws Exception{
 		try
 		{
 		Jwts.parser().setSigningKey(secret).parseClaimsJws(auth);
 		}catch(Exception e) { 
 			throw new Exception();
 		}
-	}*/
+	}
 
 
 }

@@ -5,6 +5,7 @@ import java.io.IOException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.ModelAttribute;
+import org.springframework.web.bind.annotation.RequestHeader;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
@@ -77,10 +78,10 @@ public class UserController {
 		}
 		return result;
 	}
-	/*@RequestMapping(path = "/privatemethod", method = RequestMethod.POST)
+	@RequestMapping(path = "/privatemethod", method = RequestMethod.POST)
 	public String privateMethod(@RequestHeader(value = "authorization", defaultValue = "no fecord found") String auth) throws Exception {
 		System.out.println(auth);
 		jwtUtil.varifyJwt(auth);		
 		return "its working";
-	}*/
+	}
 }
